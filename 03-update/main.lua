@@ -1,15 +1,19 @@
 function love.load()
   love.window.setMode(640,480,{fullscreen=false})
-  angle=0.0;
   x=200
   y=200
+  a=100
+  b=100
+  drawCount=0
+  elapsedTime=0
+  FPS=0
 end
 
-function love.update()
-  angle=angle + 0.1
+function love.update(dt)
   if love.keyboard.isDown('escape') then
     love.event.quit()
   end
+  -- keyboard input functions, manually check button state and do the corresponding action
   if love.keyboard.isDown('up') then
     y=y-1
   end
@@ -22,28 +26,32 @@ function love.update()
   if love.keyboard.isDown('right') then
     x=x+1
   end
+  -- mouse input function, will change an object position as long as [l]eft button is pressed
+  if love.mouse.isDown('l') then
+    a=love.mouse.getX()
+    b=love.mouse.getY()
+  end
+  --
+  elapsedTime=elapsedTime+dt
+  if elapsedTime > 1 then
+    elapsedTime=elapsedTime-1
+    FPS=drawCount
+    drawCount=0
+  end
 end
 
 function love.draw()
+  -- draw first object, a triangle.
+  love.graphics.setColor(0,0,0xff) -- set blue color
+  love.graphics.circle('fill',x,y,50,3) --draw triangle controlled by keyboard input
+  -- draw second object, a hex. This object will be drawed on top of the first object. [Painter Algorithm]
+  love.graphics.setColor(0xca,0,0) --set red color
+  love.graphics.circle('line',a,b,30,6) --hexagon
+
   love.graphics.setColor(0xff,0xff,0xff)
-  love.graphics.rectangle('line',50,50,40,20) --draw rectangle in default coordinate state
-  love.graphics.push() -- save the current coordinate state
-  -- draw rotating rectangle
-  love.graphics.translate(100,100)            --move the origin to the center of the rectangle
-  love.graphics.rotate(angle)                 --rotate the whole coordinate system
-  love.graphics.translate(-100,-100)          --move the origin back
-  love.graphics.rectangle('line',80,90,40,20) --draw our rectangle on the new (rotated) coordinate system
-  love.graphics.pop() -- restore the last coordinate state
-  love.graphics.push() -- save the current coordinate state
-  rotate(x,y,angle)
-  love.graphics.setColor(0,0,0xff)
-  love.graphics.circle('fill',x,y,50,3) --draw rotating triangle
-  love.graphics.pop() -- restore the last coordinate state
-  
+  love.graphics.print('FPS: '.. FPS, 10,10)
+  love.graphics.print('love FPS: '.. love.timer.getFPS(), 10,30)
+  drawCount=drawCount+1
 end
 
-function rotate(x, y, angle)
-  love.graphics.translate(x,y)            --move the origin to the center of the rectangle
-  love.graphics.rotate(angle)                 --rotate the whole coordinate system
-  love.graphics.translate(-x,-y)          --move the origin back
-end
+
