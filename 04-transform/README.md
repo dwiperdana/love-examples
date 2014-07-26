@@ -44,6 +44,7 @@ dy.
 ##Other notes
 ###Rotating object from a point
 To achieve this, we need to do several steps:
+
 1. Move the point we want as the center to be our origin (use translate
    to move the point to 0,0.
 2. Rotate our coordinate system
@@ -56,7 +57,7 @@ the function to rotate at a specific point.
 
     function rotate(x, y, angle)
       love.graphics.translate(x,y)            --move the origin to the center of the rectangle
-      love.graphics.rotate(angle)                 --rotate the whole coordinate system
+      love.graphics.rotate(angle)             --rotate the whole coordinate system
       love.graphics.translate(-x,-y)          --move the origin back
     end
 
